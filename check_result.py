@@ -16,9 +16,6 @@ SLACK_API_URL = "https://slack.com/api/chat.postMessage"
 SLACK_BOT_TOKEN = sys.argv[3]
 SLACK_CHANNEL = sys.argv[4]
 
-# 구매 개수를 설정
-COUNT = sys.argv[5]
-
 
 def hook_slack(message: str) -> Response:
     now_utc = datetime.utcnow()
@@ -39,7 +36,6 @@ def hook_slack(message: str) -> Response:
 
 
 def run(playwright: Playwright) -> None:
-    hook_slack(f"{COUNT}개 자동 복권 구매 시작합니다!")
     try:
         browser = playwright.chromium.launch(headless=True)  # chrome 브라우저를 실행
         context = browser.new_context()
@@ -59,41 +55,15 @@ def run(playwright: Playwright) -> None:
 
         time.sleep(5)
 
-        # 로그인 이후 기본 정보 체크 & 예치금 알림
+        # 당첨 결과 및 번호 확인
         page.goto("https://dhlottery.co.kr/common.do?method=main")
-        money_info = page.query_selector("ul.information").inner_text()
-        money_info: str = money_info.split("\n")
-        user_name = money_info[0]
-        money_info: int = int(money_info[2].replace(",", "").replace("원", ""))
-        hook_slack(f"로그인 사용자: {user_name}, 예치금: {money_info}")
+        result_info = page.query_selector("#article div.content").inner_text()
+        result_info = result_info.split("이전")[0].replace("\n", " ")
+        hook_slack(f"로또 결과: {result_info}")
 
-        # 예치금 잔액 부족 미리 exception
-        if 1000 * int(COUNT) > money_info:
-            raise Exception(
-                "예치금이 부족합니다! 충전해주세요! - https://dhlottery.co.kr/payment.do?method=payment"
-            )
-
-        page.goto(url="https://ol.dhlottery.co.kr/olotto/game/game645.do")
-        # "비정상적인 방법으로 접속하였습니다. 정상적인 PC 환경에서 접속하여 주시기 바랍니다." 우회하기
-        page.locator("#popupLayerAlert").get_by_role("button", name="확인").click()
-        print(page.content())
-
-        page.click("text=자동번호발급")
-
-        # 구매할 개수를 선택
-        page.select_option("select", str(COUNT))  # Select 1
-        page.click("text=확인")
-        page.click('input:has-text("구매하기")')  # Click input:has-text("구매하기")
-        time.sleep(2)
-        page.click(
-            'text=확인 취소 >> input[type="button"]'
-        )  # Click text=확인 취소 >> input[type="button"]
-        page.click('input[name="closeLayer"]')
-        # assert page.url == "https://el.dhlottery.co.kr/game/TotalGame.jsp?LottoId=LO40"
-
-        hook_slack(
-            f"{COUNT}개 복권 구매 성공! - 확인하러가기: https://dhlottery.co.kr/myPage.do?method=notScratchListView"
-        )
+        # page.goto("https://www.dhlottery.co.kr/myPage.do?method=lottoBuyListView")
+        # /myPage.do?method=lottoBuyList&searchStartDate=&searchEndDate=&lottoId=&nowPage=1
+        # table에서 tr 모두 가져와서 당첨 여부 체크
 
         # End of Selenium
         context.close()
