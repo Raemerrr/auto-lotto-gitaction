@@ -2,7 +2,7 @@
 
 [![Check The Result Of Lotto (로또 결과봇)](https://github.com/Nuung/auto-lotto-gitaction/actions/workflows/action-result.yml/badge.svg?branch=main)](https://github.com/Nuung/auto-lotto-gitaction/actions/workflows/action-result.yml)
 
-# Buying Lottery automatically by Github Actions
+# Buying the lottery automatically through GitHub Actions
 > ***매주 토요일 KST 08:50 에 동행 복권 로또 구매*** <br/>
 > ***매주 토요일 KST 21:50 에 동행 복권 로또 결과 slack hooking***
 - https://dhlottery.co.kr/ 동행복권 홈페이지
@@ -38,16 +38,15 @@
 #### 6. 위 세팅 완료 후 test를 위해 `action.yml` 에서 `on: [push]` 로 바꾸고 push를 해보자
 
 ![](./imgs/img3.png)
-![](./imgs/img4.png)
 
 - 러닝할 때 구매가능 여부 부터 체크 해야한다! 구매 가능한 시간대가 아니라면 Timeout error가 날 수 있다.
-- 그리고 2번째 사진은 이미 결과 발표가 난 후라 낙첨이 보인다ㅎㅎ 원래 배치로 돌리면 안보일 것 이다.
 
 #### 7. `action-result.yml` 은 이제 발표된 추첨 번호를 slack을 통해 전달해준다. 20시 35분경 발표가 나는 점, 업데이트가 나중에 되는점을 참작해 21시 50분경에 러닝하게 했다.
 
-![](./imgs/img5.png)
+![](./imgs/img4.png)
 
-- 자동으로 번호 비교 기능은 개발하지 않을 예정이다. 적어도 비교하는 재미는 잃지 않도록!
+- 적어도 비교하는 재미는 잃지 않도록 자동으로 번호 비교 기능은 개발하지 않을 예정이다.
+- 근데 몇 번 사이클 돌려보니까 그냥 만드는게 나을 것 같다 :)
 
 ## To develop something more in the local
 
@@ -60,6 +59,7 @@
 ## LOG
 - [x] 발표난 당첨 번호와 자동 비교 work flow 추가 ~~[23.06.03]~~
 - [x] 랜덤으로 구매한 복권 번호, 우선 최대 5개 까지만, 번호 noti work flow 추가 ~~[23.06.25]~~
+- [ ] 구매한 복권 당첨 여부 가져오기
 - `23.06.25` 누적 1만원 소비, MAX Match number = 2개 🥲
 
 ## STACK
