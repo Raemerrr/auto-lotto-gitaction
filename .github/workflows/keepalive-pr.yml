@@ -13,6 +13,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +%Y%m%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Create keepalive file
+        run: echo "// keepalive ping $(date)" > .keepalive.txt
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -20,8 +27,6 @@ jobs:
           title: "chore: Keepalive PR"
           body: "🔄 자동 생성된 PR입니다. 워크플로우 만료 방지를 위한 keepalive ping입니다."
           base: main
-          branch: keepalive-$(date +%Y%m%d)
+          branch: keepalive-${{ steps.date.outputs.date }}
           commit-message: "chore: keepalive ping"
           add-paths: .keepalive.txt
-          content: |
-            // keepalive ping $(date)
