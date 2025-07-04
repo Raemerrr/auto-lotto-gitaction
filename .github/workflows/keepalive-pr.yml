@@ -26,7 +26,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.KEEPALIVE_PAT }}
           title: "chore: Keepalive PR"
           body: "🔄 자동 생성된 PR입니다. 워크플로우 만료 방지를 위한 keepalive ping입니다."
           base: main
