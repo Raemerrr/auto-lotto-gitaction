@@ -13,23 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set Git Identity
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Create keepalive file & commit
-        run: |
-          BRANCH="keepalive-$(date +%Y%m%d)"
-          git checkout -b "$BRANCH"
-          
-          # 변경 사항 만들기
-          echo "// keepalive ping $(date)" >> .keepalive.txt
-
-          git add .keepalive.txt
-          git commit -m "chore: keepalive ping"
-          git push origin "$BRANCH"
-
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -37,4 +20,8 @@ jobs:
           title: "chore: Keepalive PR"
           body: "🔄 자동 생성된 PR입니다. 워크플로우 만료 방지를 위한 keepalive ping입니다."
           base: main
-          branch: keepalive-${{ steps.date.outputs.date }}
+          branch: keepalive-$(date +%Y%m%d)
+          commit-message: "chore: keepalive ping"
+          add-paths: .keepalive.txt
+          content: |
+            // keepalive ping $(date)
