@@ -137,7 +137,6 @@ def run(playwright: Playwright) -> None:
         # 자동번호발급 대신 랜덤 번호 선택으로 변경
         for i in range(int(COUNT)):
             lotto_numbers = sorted(random.sample(range(1, 46), 6))
-            hook_slack(f"{i+1}번째 로또 번호: {lotto_numbers}")
 
             # Click the 6 numbers
             for number in lotto_numbers:
@@ -145,7 +144,7 @@ def run(playwright: Playwright) -> None:
                 time.sleep(0.1)  # Small delay between clicks
 
             # After selecting 6 numbers, click '확인' to add it to the list on the right.
-            page.locator('#btnSelectNum').click()
+            page.locator("#btnSelectNum").click()
             time.sleep(0.5)
         page.click('input:has-text("구매하기")')  # Click input:has-text("구매하기")
         time.sleep(2)
