@@ -1,3 +1,4 @@
+import random
 import re
 import sys
 import time
@@ -133,11 +134,19 @@ def run(playwright: Playwright) -> None:
         page.goto(url="https://ol.dhlottery.co.kr/olotto/game/game645.do")
         # "비정상적인 방법으로 접속하였습니다. 정상적인 PC 환경에서 접속하여 주시기 바랍니다." 우회하기
         page.locator("#popupLayerAlert").get_by_role("button", name="확인").click()
-        page.click("text=자동번호발급")
+        # 자동번호발급 대신 랜덤 번호 선택으로 변경
+        for i in range(int(COUNT)):
+            lotto_numbers = sorted(random.sample(range(1, 46), 6))
+            hook_slack(f"{i+1}번째 로또 번호: {lotto_numbers}")
 
-        # 구매할 개수를 선택
-        page.select_option("select", str(COUNT))  # Select 1
-        page.click("text=확인")
+            # Click the 6 numbers
+            for number in lotto_numbers:
+                page.locator(f'label[for="check645num{number}"]').click()
+                time.sleep(0.1)  # Small delay between clicks
+
+            # After selecting 6 numbers, click '확인' to add it to the list on the right.
+            page.locator('#btnSelectNum').click()
+            time.sleep(0.5)
         page.click('input:has-text("구매하기")')  # Click input:has-text("구매하기")
         time.sleep(2)
         page.click(
